@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../models/level_model.dart';
-import '../../../controllers/level_controller.dart';
-import '../../../core/level_data.dart';
-import '../../widgets/tracing_canvas.dart';
-import 'activity_layout.dart';
+import '../../../../models/level_model.dart';
+import '../../../../controllers/level_controller.dart';
+import '../../../../core/level_data.dart';
+import '../../../widgets/tracing_canvas.dart';
+import '../activity_layout.dart';
 
 class TracingScreen extends StatefulWidget {
   final Level level;

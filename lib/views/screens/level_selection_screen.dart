@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/level_controller.dart';
 import '../widgets/level_node.dart';
 import '../../models/level_model.dart';
-import 'activities/tracing_screen.dart';
-import 'activities/syllables_screen.dart';
-import 'activities/words_screen.dart';
-import 'activities/short_texts_screen.dart';
+import 'activities/modulo_1_trazos/tracing_screen.dart';
+import 'activities/modulo_2_silabas/syllables_screen.dart';
+import 'activities/modulo_3_palabras/words_screen.dart';
+import 'activities/modulo_4_textos/short_texts_screen.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
   final int moduleId;
