@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/level_controller.dart';
 import '../widgets/level_node.dart';
-import 'activities/tracing_screen.dart';
-
 import '../../models/level_model.dart';
+import 'activities/tracing_screen.dart';
+import 'activities/syllables_screen.dart';
+import 'activities/words_screen.dart';
+import 'activities/short_texts_screen.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
   final int moduleId;
@@ -107,12 +109,40 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                         level: level,
                         onTap: () {
                           if (level.status == LevelStatus.current) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => TracingScreen(
+                            Widget activityScreen;
+
+                            // Selección dinámica de la actividad según el módulo
+                            switch (widget.moduleId) {
+                              case 1:
+                                activityScreen = TracingScreen(
                                   level: level,
                                   controller: widget.controller,
-                                ),
+                                );
+                                break;
+                              case 2:
+                                activityScreen = SyllablesScreen(
+                                  level: level,
+                                  controller: widget.controller,
+                                );
+                                break;
+                              case 3:
+                                activityScreen = WordsScreen(
+                                  level: level,
+                                  controller: widget.controller,
+                                );
+                                break;
+                              case 4:
+                              default:
+                                activityScreen = ShortTextsScreen(
+                                  level: level,
+                                  controller: widget.controller,
+                                );
+                                break;
+                            }
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => activityScreen,
                               ),
                             );
                           } else {

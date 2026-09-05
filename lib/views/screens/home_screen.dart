@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/home_controller.dart';
 import '../../controllers/level_controller.dart';
-import '../../repositories/level_repository.dart';
+import '../../repositories/sqlite_level_repository.dart';
 import '../widgets/module_card.dart';
 import '../../core/app_assets.dart';
 import 'level_selection_screen.dart';
@@ -64,14 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         return ModuleCard(
                           module: module,
                           onTap: () {
-                            // Navegación a la pantalla de niveles
+                            // Navegación a la pantalla de niveles usando SQLite Real
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => LevelSelectionScreen(
                                   moduleId: module.id,
                                   moduleTitle: module.title,
-                                  // Instanciamos el controlador localmente por ahora (idealmente inyectarlo desde main o un locator)
-                                  controller: LevelController(repository: MockLevelRepository()),
+                                  controller: LevelController(repository: SQLiteLevelRepository()),
                                 ),
                               ),
                             );

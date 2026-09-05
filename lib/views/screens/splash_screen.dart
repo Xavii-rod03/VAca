@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../core/app_assets.dart';
 import 'registration_screen.dart';
+import 'home_screen.dart';
 import '../../controllers/registration_controller.dart';
 import '../../controllers/home_controller.dart';
 
@@ -25,8 +26,27 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Temporizador para pasar a la pantalla de registro después de 3 segundos
-    Timer(const Duration(seconds: 5), () {
+    _checkUserAndNavigate();
+  }
+
+  Future<void> _checkUserAndNavigate() async {
+    await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
+
+    // Verificar si ya existe un usuario guardado
+    final user = await widget.registrationController.repository.getUser();
+
+    if (!mounted) return;
+
+    if (user != null && user.name.isNotEmpty) {
+      // Usuario ya registrado -> Ir a HomeScreen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(controller: widget.homeController),
+        ),
+      );
+    } else {
+      // Usuario nuevo -> Ir a RegistrationScreen
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => RegistrationScreen(
@@ -35,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
       );
-    });
+    }
   }
 
   @override

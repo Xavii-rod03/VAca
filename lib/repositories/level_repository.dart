@@ -2,6 +2,7 @@ import '../models/level_model.dart';
 
 abstract class LevelRepository {
   Future<List<Level>> getLevelsForModule(int moduleId);
+  Future<void> updateLevelProgress(Level level, int stars);
 }
 
 class MockLevelRepository implements LevelRepository {
@@ -35,4 +36,7 @@ class MockLevelRepository implements LevelRepository {
       );
     });
   }
+
+  @override
+  Future<void> updateLevelProgress(Level level, int stars) async {}
 }

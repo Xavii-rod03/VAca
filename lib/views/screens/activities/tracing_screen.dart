@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'activity_layout.dart';
-import '../../widgets/tracing_canvas.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../models/level_model.dart';
 import '../../../controllers/level_controller.dart';
+import '../../../core/level_data.dart';
+import '../../widgets/tracing_canvas.dart';
+import 'activity_layout.dart';
 
 class TracingScreen extends StatefulWidget {
   final Level level;
   final LevelController controller;
 
   const TracingScreen({
-    super.key, 
+    super.key,
     required this.level,
     required this.controller,
   });
@@ -22,6 +23,8 @@ class TracingScreen extends StatefulWidget {
 class _TracingScreenState extends State<TracingScreen> {
   FeedbackState _feedbackState = FeedbackState.none;
   bool _hasStartedDrawing = false;
+  int _currentRound = 1; // 1 a 5 rondas por nivel
+  final int _totalRounds = 5;
 
   void _checkResult() {
     setState(() {
@@ -31,14 +34,16 @@ class _TracingScreenState extends State<TracingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final levelData = LevelDataCatalog.getTracingData(widget.level.id);
+
     return ActivityLayout(
-      progress: 0.2,
+      progress: _currentRound / _totalRounds.toDouble(),
       totalStars: widget.level.stars,
-      instructionText: 'Sigue la línea hacia abajo',
+      instructionText: '${levelData.instruction} ($_currentRound/$_totalRounds)',
       onAudioPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Reproduciendo audio...', style: GoogleFonts.baloo2()),
+            content: Text(levelData.instruction, style: GoogleFonts.baloo2()),
             duration: const Duration(seconds: 1),
           ),
         );
@@ -47,10 +52,19 @@ class _TracingScreenState extends State<TracingScreen> {
       feedbackState: _feedbackState,
       onContinue: () async {
         if (_feedbackState == FeedbackState.success) {
-          // Guardar progreso: Marcar como completado con 3 estrellas
-          await widget.controller.completeLevel(widget.level, 3);
-          if (mounted && context.mounted) {
-            Navigator.of(context).pop();
+          if (_currentRound < _totalRounds) {
+            // Avanzar a la siguiente ronda dentro del nivel
+            setState(() {
+              _currentRound++;
+              _hasStartedDrawing = false;
+              _feedbackState = FeedbackState.none;
+            });
+          } else {
+            // Se completaron las 5 rondas del nivel
+            await widget.controller.completeLevel(widget.level, 3);
+            if (mounted && context.mounted) {
+              Navigator.of(context).pop();
+            }
           }
         } else {
           setState(() {
@@ -59,14 +73,14 @@ class _TracingScreenState extends State<TracingScreen> {
         }
       },
       child: Stack(
+        key: ValueKey(_currentRound), // Fuerza a recrear el lienzo en cada ronda
         children: [
           TracingCanvas(
+            shapeType: levelData.shapeType,
             onDrawingStarted: () {
               _hasStartedDrawing = true;
             },
           ),
-          
-          // Botón flotante para "Comprobar"
           if (_feedbackState == FeedbackState.none)
             Positioned(
               bottom: 40,
